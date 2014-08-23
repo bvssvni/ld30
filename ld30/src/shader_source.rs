@@ -7,7 +7,7 @@ in vec3 pos;
 out vec2 v_uv;
 uniform mat4 model_view_projection;
 
-main() {
+void main() {
     gl_Position = model_view_projection * vec4(pos, 1.0);
 }
 "
@@ -19,7 +19,7 @@ pub static FRAGMENT_SRC: gfx::ShaderSource = shaders! {
 out vec4 out_color;
 uniform vec4 color;
 
-main() {
+void main() {
     out_color = color;
 }
 "
