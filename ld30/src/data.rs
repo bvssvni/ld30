@@ -143,3 +143,31 @@ impl ObjectRange {
     }
 }
 
+/// Stores [start, end) for object sets (one OBJ file).
+///
+/// This points to a range of object ranges.
+pub struct ObjSetRange(uint, uint);
+
+impl ObjSetRange {
+    pub fn add_obj_set(
+        obj_set: &wobj::obj::ObjSet,
+        vertices: &mut Vec<Vertex>,
+        indices: &mut Vec<u32>,
+        index_ranges: &mut Vec<IndexRange>,
+        objs: &mut Vec<ObjectRange>
+    ) -> ObjSetRange {
+        let start = objs.len();
+        for obj in obj_set.objects.iter() {
+            objs.push(
+                ObjectRange::add_object(
+                    obj, 
+                    vertices,
+                    indices,
+                    index_ranges
+                )
+            );
+        }
+        ObjSetRange(start, objs.len())
+    }
+}
+
