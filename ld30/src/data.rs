@@ -16,6 +16,10 @@ impl Type {
             Slab => Some("slab.obj"),
         }
     }
+
+    pub fn to_uint(&self) -> uint {
+        *self as uint
+    }
 }
 
 pub struct TypeIterator {
@@ -43,7 +47,7 @@ impl Iterator<Type> for TypeIterator {
 }
 
 pub struct Data {
-    objs: Vec<Option<wobj::obj::ObjSet>>,
+    pub objs: Vec<Option<wobj::obj::ObjSet>>,
 }
 
 impl Data {

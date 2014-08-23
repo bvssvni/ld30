@@ -7,6 +7,7 @@ use gfx::{Device, DeviceHelper};
 
 use shader_source;
 use shader_param::Program;
+use data;
 
 pub struct Graphics {
     device: device::gl::GlDevice,
@@ -52,6 +53,18 @@ impl Graphics {
             },
             frame
         );
+    }
+
+    pub fn draw_instance(&mut self, ty: data::Type, data: &data::Data) {
+        let obj = match data.objs[ty.to_uint()] {
+                Some(ref obj) => obj,
+                None => return
+            };
+        for obj in obj.objects.iter() {
+            for geom in obj.geometry.iter() {
+                
+            }
+        }
     }
 
     pub fn flush(&mut self) {

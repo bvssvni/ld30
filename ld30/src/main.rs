@@ -20,6 +20,7 @@ mod shader_source;
 mod camera;
 mod rendering;
 mod data;
+mod logic;
 
 fn main() {
     let asset_store = piston::AssetStore::from_folder("../bin/assets");
@@ -41,10 +42,18 @@ fn main() {
         updates_per_second: 120,
         max_frames_per_second: 60,
     };
+
+    // TEST
+    println!("{}", data.objs[data::Slab.to_uint()]);
+
     for e in piston::GameIterator::new(&mut window, &game_iter_settings) {
         match e {
             piston::Render(_args) => {
                     graphics.clear();
+
+                    // TEST
+                    graphics.draw_instance(data::Slab, &data);
+
                     graphics.flush();
                 },
             piston::Update(args) => {
