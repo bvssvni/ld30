@@ -2,13 +2,15 @@
 
 extern crate piston;
 extern crate gfx;
+extern crate device;
 extern crate nphysics3df32;
 extern crate sdl2_game_window;
 #[phase(plugin)]
 extern crate gfx_macros;
 
 use nphysics3df32 as phys;
-use sdl2_game_window::GameWindowSDL2 as Window;
+
+pub use sdl2_game_window::GameWindowSDL2 as Window;
 
 mod internal;
 mod vertex;
@@ -27,14 +29,18 @@ fn main() {
             fullscreen: false,
         }
     );
-
+   
+    let mut graphics = rendering::Graphics::from_window(&mut window); 
     let game_iter_settings = piston::GameIteratorSettings {
         updates_per_second: 120,
         max_frames_per_second: 60,
     };
     for e in piston::GameIterator::new(&mut window, &game_iter_settings) {
         match e {
-            piston::Render(_args) => {},
+            piston::Render(_args) => {
+                    graphics.clear();
+                    graphics.flush();
+                },
             piston::Update(args) => {
                 // Update physics.
                 world.step(args.dt as f32);
