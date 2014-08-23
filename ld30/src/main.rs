@@ -7,6 +7,7 @@ extern crate nphysics3df32;
 extern crate sdl2_game_window;
 #[phase(plugin)]
 extern crate gfx_macros;
+extern crate wobj = "wavefront-obj";
 
 use nphysics3df32 as phys;
 
@@ -19,6 +20,16 @@ mod shader_source;
 mod rendering;
 
 fn main() {
+    let asset_store = piston::AssetStore::from_folder("../bin/assets");
+    
+    // TEST
+    {
+        use std::io;
+
+        let slab = io::File::open(&asset_store.path("slab.obj").unwrap()).read_to_string().unwrap();
+        let objects = wobj::obj::parse(slab);
+    }
+
     let mut world = phys::world::World::new();
     let mut window = Window::new(
         piston::shader_version::opengl::OpenGL_3_2,
