@@ -12,6 +12,7 @@ pub struct Graphics {
     device: device::gl::GlDevice,
     renderer: gfx::Renderer,
     frame: gfx::Frame,
+    state: gfx::DrawState,
     background_color: [f32, ..4],
     program: Program,
 }
@@ -20,6 +21,7 @@ impl Graphics {
     pub fn from_window(window: &mut Window) -> Graphics {
         let (mut device, frame) = window.gfx();
         let renderer = device.create_renderer();
+        let state = gfx::DrawState::new().depth(gfx::state::LessEqual, true);
         let program = device.link_program(
                 shader_source::VERTEX_SRC.clone(),
                 shader_source::FRAGMENT_SRC.clone()
@@ -28,6 +30,7 @@ impl Graphics {
             device: device,
             renderer: renderer,
             frame: frame,
+            state: state,
             background_color: [0.0, 0.0, 0.0, 1.0],
             program: program,
         }
