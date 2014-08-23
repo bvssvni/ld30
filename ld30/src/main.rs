@@ -17,6 +17,7 @@ mod internal;
 mod vertex;
 mod shader_param;
 mod shader_source;
+mod camera;
 mod rendering;
 mod data;
 
@@ -33,7 +34,8 @@ fn main() {
             fullscreen: false,
         }
     );
-   
+
+    let mut camera_manager = camera::CameraManager::new();   
     let mut graphics = rendering::Graphics::from_window(&mut window); 
     let game_iter_settings = piston::GameIteratorSettings {
         updates_per_second: 120,
