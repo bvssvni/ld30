@@ -49,18 +49,34 @@ impl Iterator<Type> for TypeIterator {
 }
 
 pub struct Data {
-    pub objs: Vec<Option<wobj::obj::ObjSet>>,
+    pub obj_data: Vec<Option<wobj::obj::ObjSet>>,
+    pub vertices: Vec<Vertex>,
+    pub indices: Vec<u32>,
+    pub index_ranges: Vec<IndexRange>,
+    pub objs: Vec<ObjectRange>,
+    pub obj_sets: Vec<ObjSetRange>
 }
 
 impl Data {
     pub fn from_asset_store(asset_store: &AssetStore) -> Data {
+        let obj_data = read_obj_data(asset_store);
+        let vertices = Vec::new();
+        let indices = Vec::new();
+        let index_ranges = Vec::new();
+        let objs = Vec::new();
+        let obj_sets = Vec::new();
         Data {
-            objs: read_objs(asset_store)
+            obj_data: obj_data,
+            vertices: vertices,
+            indices: indices,
+            index_ranges: index_ranges,
+            objs: objs,
+            obj_sets: obj_sets
         }
     }
 }
 
-pub fn read_objs(asset_store: &AssetStore) -> Vec<Option<wobj::obj::ObjSet>> {
+pub fn read_obj_data(asset_store: &AssetStore) -> Vec<Option<wobj::obj::ObjSet>> {
     let mut vec = Vec::new();
     for it in TypeIterator::new() {
         match it.get_obj_file() {

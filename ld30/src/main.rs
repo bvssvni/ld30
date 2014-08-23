@@ -44,7 +44,7 @@ fn main() {
     };
 
     // TEST
-    println!("{}", data.objs[data::Slab.to_uint()]);
+    println!("{}", data.obj_data[data::Slab.to_uint()]);
 
     for e in piston::GameIterator::new(&mut window, &game_iter_settings) {
         match e {

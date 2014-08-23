@@ -56,7 +56,7 @@ impl Graphics {
     }
 
     pub fn draw_instance(&mut self, ty: data::Type, data: &data::Data) {
-        let obj = match data.objs[ty.to_uint()] {
+        let obj = match data.obj_data[ty.to_uint()] {
                 Some(ref obj) => obj,
                 None => return
             };
