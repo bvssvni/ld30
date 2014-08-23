@@ -1,0 +1,23 @@
+[package]
+
+name = "ld30"
+version = "0.0.1"
+authors = ["Sven Nilsen <bvssvni@gmail.com>"]
+
+[[bin]]
+
+name = "ld30"
+path = "src/main.rs"
+
+[dependencies.piston]
+
+git = "https://github.com/pistondevelopers/piston"
+
+[dependencies.gfx]
+
+git = "https://github.com/gfx-rs/gfx-rs"
+
+[dependencies.nphysics3df32]
+
+git = "https://github.com/sebcrozet/nphysics"
+
