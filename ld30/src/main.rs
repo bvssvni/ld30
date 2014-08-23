@@ -18,18 +18,11 @@ mod vertex;
 mod shader_param;
 mod shader_source;
 mod rendering;
+mod data;
 
 fn main() {
     let asset_store = piston::AssetStore::from_folder("../bin/assets");
-    
-    // TEST
-    {
-        use std::io;
-
-        let slab = io::File::open(&asset_store.path("slab.obj").unwrap()).read_to_string().unwrap();
-        let objects = wobj::obj::parse(slab);
-    }
-
+    let data = data::Data::from_asset_store(&asset_store);   
     let mut world = phys::world::World::new();
     let mut window = Window::new(
         piston::shader_version::opengl::OpenGL_3_2,
