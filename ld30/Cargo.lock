@@ -5,6 +5,7 @@ dependencies = [
  "gfx 0.1.0 (git+https://github.com/gfx-rs/gfx-rs#b33dedb6b65cb1f4fc98aaf6fc175f8bca08e678)",
  "nphysics3df32 0.1.0 (git+https://github.com/sebcrozet/nphysics#013578099c91ef560af55636dcb9cb6152764c41)",
  "piston 0.0.0 (git+https://github.com/pistondevelopers/piston#d19b813225ea941018e4c97c3de404a6d35b3d1f)",
+ "sdl2_game_window 0.0.0 (git+https://github.com/pistondevelopers/sdl2_game_window#f84fc38ac0ce794711eb5028c98c5ce2c9f2b0c7)",
 ]
 
 [[package]]
@@ -43,6 +44,14 @@ dependencies = [
 name = "gfx_macros"
 version = "0.1.0"
 source = "git+https://github.com/gfx-rs/gfx-rs#b33dedb6b65cb1f4fc98aaf6fc175f8bca08e678"
+
+[[package]]
+name = "gl"
+version = "0.0.1"
+source = "git+https://github.com/bjz/gl-rs.git#8bf7197ac6769a208d6bdc30070958034ecf95e8"
+dependencies = [
+ "gl_generator 0.0.1 (git+https://github.com/bjz/gl-rs.git#8bf7197ac6769a208d6bdc30070958034ecf95e8)",
+]
 
 [[package]]
 name = "gl_generator"
@@ -125,6 +134,22 @@ dependencies = [
 name = "rust-xml"
 version = "0.1.0"
 source = "git+https://github.com/netvl/rust-xml#361fc1ac28422186a97b377ad9c1d571a2b36f6a"
+
+[[package]]
+name = "sdl2"
+version = "0.0.1"
+source = "git+https://github.com/AngryLawyer/rust-sdl2#6025d7493ba461fffff254bae770868ec21288bd"
+
+[[package]]
+name = "sdl2_game_window"
+version = "0.0.0"
+source = "git+https://github.com/pistondevelopers/sdl2_game_window#f84fc38ac0ce794711eb5028c98c5ce2c9f2b0c7"
+dependencies = [
+ "gfx 0.1.0 (git+https://github.com/gfx-rs/gfx-rs#b33dedb6b65cb1f4fc98aaf6fc175f8bca08e678)",
+ "gl 0.0.1 (git+https://github.com/bjz/gl-rs.git#8bf7197ac6769a208d6bdc30070958034ecf95e8)",
+ "piston 0.0.0 (git+https://github.com/pistondevelopers/piston#d19b813225ea941018e4c97c3de404a6d35b3d1f)",
+ "sdl2 0.0.1 (git+https://github.com/AngryLawyer/rust-sdl2#6025d7493ba461fffff254bae770868ec21288bd)",
+]
 
 [[package]]
 name = "shader_version"
