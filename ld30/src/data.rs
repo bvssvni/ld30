@@ -74,11 +74,37 @@ pub fn read_objs(asset_store: &AssetStore) -> Vec<Option<wobj::obj::ObjSet>> {
     vec
 }
  
-pub fn add_vertices(obj: wobj::obj::Object, list: &mut Vec<Vertex>) -> (uint, uint) {
-    let start = list.len();
+/// Extracts the coordinates of the corners and stores it in a list.
+///
+/// Returns the range where the object is stored in the list.
+pub fn add_vertices(
+    obj: &wobj::obj::Object, 
+    vertices: &mut Vec<Vertex>
+) -> (uint, uint) {
+    let start = vertices.len();
     for v in obj.vertices.iter() {
-        list.push(Vertex::new([v.x as f32, v.y as f32, v.z as f32]));
+        vertices.push(Vertex::new([v.x as f32, v.y as f32, v.z as f32]));
     }
-    (start, list.len())
+    (start, vertices.len())
+}
+
+
+pub fn add_indices(
+    geom: &wobj::obj::Geometry, 
+    vertex_offset: uint, 
+    indices: &mut Vec<u32>
+) -> (uint, uint) {
+    let start = indices.len();
+    for shape in geom.shapes.iter() {
+        match *shape {
+            wobj::obj::Triangle((a, _), (b, _), (c, _)) => {
+                indices.push(a as u32);
+                indices.push(b as u32);
+                indices.push(c as u32);
+            },
+            _ => {}
+        }
+    }
+    (start, indices.len())
 }
 
