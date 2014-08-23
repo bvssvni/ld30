@@ -13,6 +13,7 @@ use sdl2_game_window::GameWindowSDL2 as Window;
 mod internal;
 mod vertex;
 mod shader_param;
+mod shader_source;
 mod rendering;
 
 fn main() {
