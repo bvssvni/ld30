@@ -3,6 +3,8 @@ extern crate wobj = "wavefront-obj";
 use piston::AssetStore;
 use std::io;
 
+use vertex::Vertex;
+
 #[deriving(PartialEq, Eq, FromPrimitive, Show)]
 pub enum Type {
     Slab = 0,
@@ -70,5 +72,13 @@ pub fn read_objs(asset_store: &AssetStore) -> Vec<Option<wobj::obj::ObjSet>> {
         }
     }
     vec
+}
+ 
+pub fn add_vertices(obj: wobj::obj::Object, list: &mut Vec<Vertex>) -> (uint, uint) {
+    let start = list.len();
+    for v in obj.vertices.iter() {
+        list.push(Vertex::new([v.x as f32, v.y as f32, v.z as f32]));
+    }
+    (start, list.len())
 }
 
