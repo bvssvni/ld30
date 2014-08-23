@@ -60,11 +60,27 @@ pub struct Data {
 impl Data {
     pub fn from_asset_store(asset_store: &AssetStore) -> Data {
         let obj_data = read_obj_data(asset_store);
-        let vertices = Vec::new();
-        let indices = Vec::new();
-        let index_ranges = Vec::new();
-        let objs = Vec::new();
-        let obj_sets = Vec::new();
+        let mut vertices = Vec::new();
+        let mut indices = Vec::new();
+        let mut index_ranges = Vec::new();
+        let mut objs = Vec::new();
+        let mut obj_sets = Vec::new();
+        for obj_set in obj_data.iter() {
+            match *obj_set {
+                Some(ref obj_set) => {
+                    obj_sets.push(
+                        ObjSetRange::add_obj_set(
+                            obj_set,
+                            &mut vertices,
+                            &mut indices,
+                            &mut index_ranges,
+                            &mut objs
+                        )
+                    );
+                },
+                None => {}
+            }
+        }
         Data {
             obj_data: obj_data,
             vertices: vertices,
