@@ -73,40 +73,73 @@ pub fn read_objs(asset_store: &AssetStore) -> Vec<Option<wobj::obj::ObjSet>> {
     }
     vec
 }
- 
-/// Extracts the coordinates of the corners and stores it in a list.
-///
-/// Returns the range where the object is stored in the list.
-pub fn add_vertices(
-    obj: &wobj::obj::Object, 
-    vertices: &mut Vec<Vertex>
-) -> (uint, uint) {
-    let start = vertices.len();
-    for v in obj.vertices.iter() {
-        vertices.push(Vertex::new([v.x as f32, v.y as f32, v.z as f32]));
+
+/// Stores [start, end) ranges to vertices.
+pub struct VertexRange(uint, uint);
+
+impl VertexRange {
+    /// Extracts the coordinates of the corners and stores it in a list.
+    ///
+    /// Returns the range where the object is stored in the list.
+    pub fn add_vertices(
+        obj: &wobj::obj::Object, 
+        vertices: &mut Vec<Vertex>
+    ) -> VertexRange {
+        let start = vertices.len();
+        for v in obj.vertices.iter() {
+            vertices.push(Vertex::new([v.x as f32, v.y as f32, v.z as f32]));
+        }
+        VertexRange(start, vertices.len())
     }
-    (start, vertices.len())
 }
 
-/// Extracts the indices from the triangles and stores it in a list.
-///
-/// Returns the range where the geometry is stored in the list.
-pub fn add_indices(
-    geom: &wobj::obj::Geometry, 
-    vertex_offset: uint, 
-    indices: &mut Vec<u32>
-) -> (uint, uint) {
-    let start = indices.len();
-    for shape in geom.shapes.iter() {
-        match *shape {
-            wobj::obj::Triangle((a, _), (b, _), (c, _)) => {
-                indices.push(a as u32);
-                indices.push(b as u32);
-                indices.push(c as u32);
-            },
-            _ => {}
+/// Stores [start, end) ranges to indices.
+pub struct IndexRange(uint, uint);
+
+impl IndexRange {
+    /// Extracts the indices from the triangles and stores it in a list.
+    ///
+    /// Returns the range where the geometry is stored in the list.
+    pub fn add_indices(
+        geom: &wobj::obj::Geometry, 
+        VertexRange(offset, _): VertexRange, 
+        indices: &mut Vec<u32>
+    ) -> IndexRange {
+        let start = indices.len();
+        for shape in geom.shapes.iter() {
+            match *shape {
+                // Extract triangles and offset them relative to the
+                // position in the vertex mesh.
+                wobj::obj::Triangle((a, _), (b, _), (c, _)) => {
+                    indices.push((a + offset) as u32);
+                    indices.push((b + offset) as u32);
+                    indices.push((c + offset) as u32);
+                },
+                _ => {}
+            }
         }
+        IndexRange(start, indices.len())
     }
-    (start, indices.len())
+}
+
+/// Stores [start, end) ranges for objects.
+///
+/// This points to a range of index ranges.
+pub struct ObjectRange(uint, uint);
+
+impl ObjectRange {
+    pub fn add_object(
+        obj: &wobj::obj::Object,
+        vertices: &mut Vec<Vertex>,
+        indices: &mut Vec<u32>,
+        index_ranges: &mut Vec<IndexRange>
+    ) -> ObjectRange {
+        let vertex_range = VertexRange::add_vertices(obj, vertices);
+        let start = index_ranges.len();
+        for geom in obj.geometry.iter() {
+            index_ranges.push(IndexRange::add_indices(geom, vertex_range, indices))
+        }
+        ObjectRange(start, index_ranges.len())
+    }
 }
 
