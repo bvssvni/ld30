@@ -1,11 +1,18 @@
+#![feature(phase)]
 
 extern crate piston;
 extern crate gfx;
 extern crate nphysics3df32;
 extern crate sdl2_game_window;
+#[phase(plugin)]
+extern crate gfx_macros;
 
 use nphysics3df32 as phys;
 use sdl2_game_window::GameWindowSDL2 as Window;
+
+mod internal;
+mod vertex;
+mod rendering;
 
 fn main() {
     let mut world = phys::world::World::new();
