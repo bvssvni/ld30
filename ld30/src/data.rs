@@ -88,7 +88,9 @@ pub fn add_vertices(
     (start, vertices.len())
 }
 
-
+/// Extracts the indices from the triangles and stores it in a list.
+///
+/// Returns the range where the geometry is stored in the list.
 pub fn add_indices(
     geom: &wobj::obj::Geometry, 
     vertex_offset: uint, 
