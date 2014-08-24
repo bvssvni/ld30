@@ -37,7 +37,7 @@ fn main() {
     );
 
     let mut camera_manager = camera::CameraManager::new();   
-    let mut graphics = rendering::Graphics::from_window(&mut window); 
+    let mut graphics = rendering::Graphics::new(&mut window, &data); 
     let game_iter_settings = piston::GameIteratorSettings {
         updates_per_second: 120,
         max_frames_per_second: 60,

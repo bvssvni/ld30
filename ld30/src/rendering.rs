@@ -14,12 +14,13 @@ pub struct Graphics {
     renderer: gfx::Renderer,
     frame: gfx::Frame,
     state: gfx::DrawState,
+    vertices: gfx::Mesh,
     background_color: [f32, ..4],
     program: Program,
 }
 
 impl Graphics {
-    pub fn from_window(window: &mut Window) -> Graphics {
+    pub fn new(window: &mut Window, data: &data::Data) -> Graphics {
         let (mut device, frame) = window.gfx();
         let renderer = device.create_renderer();
         let state = gfx::DrawState::new().depth(gfx::state::LessEqual, true);
@@ -27,11 +28,13 @@ impl Graphics {
                 shader_source::VERTEX_SRC.clone(),
                 shader_source::FRAGMENT_SRC.clone()
             ).unwrap();
+        let vertices = device.create_mesh(data.vertices.clone());
         Graphics {
             device: device,
             renderer: renderer,
             frame: frame,
             state: state,
+            vertices: vertices,
             background_color: [0.0, 0.0, 0.0, 1.0],
             program: program,
         }
