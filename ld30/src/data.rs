@@ -90,6 +90,17 @@ impl Data {
             obj_sets: obj_sets
         }
     }
+
+    pub fn with_type_index_ranges(&self, ty: Type, f: |uint, uint|) {
+        let ObjSetRange(start, end) = self.obj_sets[ty.to_uint()];
+        for i in range(start, end) {
+            let ObjectRange(start, end) = self.objs[i];
+            for i in range(start, end) {
+                let IndexRange(start, end) = self.index_ranges[i];
+                f(start, end);
+            }
+        }
+    }
 }
 
 pub fn read_obj_data(asset_store: &AssetStore) -> Vec<Option<wobj::obj::ObjSet>> {
