@@ -6,8 +6,7 @@ pub type Matrix4 = vecmath::Matrix4<f32>;
 
 pub struct CameraManager {
     pub projection: Matrix4,
-    pub camera: cam::Camera,
-    fps_controller: cam::FPSController,
+    pub first_person: cam::FirstPerson,
 }
 
 impl CameraManager {
@@ -18,15 +17,13 @@ impl CameraManager {
                 far_clip: 1000.0,
                 aspect_ratio: 1.0
             }.projection();
-        let fps_controller = cam::FPSController::new(
-                cam::FPSControllerSettings::default()
+        let first_person = cam::FirstPerson::new(
+                0.0, 0.0, 0.0,
+                cam::FirstPersonSettings::default()
             );
-        let mut camera = cam::Camera::new(0.0, 0.0, 0.0);
-        camera.set_yaw_pitch(fps_controller.yaw, fps_controller.pitch);
         CameraManager {
             projection: projection,
-            camera: camera,
-            fps_controller: fps_controller
+            first_person: first_person
         }
     }
 }

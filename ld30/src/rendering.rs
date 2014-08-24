@@ -47,7 +47,7 @@ impl Graphics {
         renderer.reset();
         renderer.clear(
             gfx::ClearData {
-                color: Some(gfx::Color(*background_color)),
+                color: Some(*background_color),
                 depth: Some(1.0),
                 stencil: None,
             },
