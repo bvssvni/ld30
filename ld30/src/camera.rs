@@ -18,7 +18,7 @@ impl CameraManager {
                 aspect_ratio: 1.0
             }.projection();
         let first_person = cam::FirstPerson::new(
-                0.0, 0.0, 0.0,
+                [0.0, 0.0, 0.0],
                 cam::FirstPersonSettings::default()
             );
         CameraManager {
