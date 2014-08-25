@@ -50,21 +50,21 @@ impl Iterator<Type> for TypeIterator {
 
 pub struct Data {
     pub obj_data: Vec<Option<wobj::obj::ObjSet>>,
-    pub vertices: Vec<Vertex>,
+    pub obj_sets: Vec<ObjSetRange>,
+    pub objects: Vec<ObjectRange>,
+    pub geometries: Vec<GeometryRange>,
     pub indices: Vec<u32>,
-    pub index_ranges: Vec<IndexRange>,
-    pub objs: Vec<ObjectRange>,
-    pub obj_sets: Vec<ObjSetRange>
+    pub vertices: Vec<Vertex>,
 }
 
 impl Data {
     pub fn from_asset_store(asset_store: &AssetStore) -> Data {
         let obj_data = read_obj_data(asset_store);
-        let mut vertices = Vec::new();
-        let mut indices = Vec::new();
-        let mut index_ranges = Vec::new();
-        let mut objs = Vec::new();
         let mut obj_sets = Vec::new();
+        let mut objects = Vec::new();
+        let mut geometries = Vec::new();
+        let mut indices = Vec::new();
+        let mut vertices = Vec::new();
         for obj_set in obj_data.iter() {
             match *obj_set {
                 Some(ref obj_set) => {
@@ -73,8 +73,8 @@ impl Data {
                             obj_set,
                             &mut vertices,
                             &mut indices,
-                            &mut index_ranges,
-                            &mut objs
+                            &mut geometries,
+                            &mut objects
                         )
                     );
                 },
@@ -83,20 +83,20 @@ impl Data {
         }
         Data {
             obj_data: obj_data,
-            vertices: vertices,
+            obj_sets: obj_sets,
+            objects: objects,
+            geometries: geometries,
             indices: indices,
-            index_ranges: index_ranges,
-            objs: objs,
-            obj_sets: obj_sets
+            vertices: vertices,
         }
     }
 
     pub fn with_type_index_ranges(&self, ty: Type, f: |uint, uint|) {
         let ObjSetRange(start, end) = self.obj_sets[ty.to_uint()];
         for i in range(start, end) {
-            let ObjectRange(start, end) = self.objs[i];
+            let ObjectRange(start, end) = self.objects[i];
             for i in range(start, end) {
-                let IndexRange(start, end) = self.index_ranges[i];
+                let GeometryRange(start, end) = self.geometries[i];
                 f(start, end);
             }
         }
@@ -137,9 +137,9 @@ impl VertexRange {
 }
 
 /// Stores [start, end) ranges to indices.
-pub struct IndexRange(uint, uint);
+pub struct GeometryRange(uint, uint);
 
-impl IndexRange {
+impl GeometryRange {
     /// Extracts the indices from the triangles and stores it in a list.
     ///
     /// Returns the range where the geometry is stored in the list.
@@ -147,7 +147,7 @@ impl IndexRange {
         geom: &wobj::obj::Geometry, 
         VertexRange(offset, _): VertexRange, 
         indices: &mut Vec<u32>
-    ) -> IndexRange {
+    ) -> GeometryRange {
         let start = indices.len();
         for shape in geom.shapes.iter() {
             match *shape {
@@ -161,7 +161,7 @@ impl IndexRange {
                 _ => {}
             }
         }
-        IndexRange(start, indices.len())
+        GeometryRange(start, indices.len())
     }
 }
 
@@ -175,14 +175,14 @@ impl ObjectRange {
         obj: &wobj::obj::Object,
         vertices: &mut Vec<Vertex>,
         indices: &mut Vec<u32>,
-        index_ranges: &mut Vec<IndexRange>
+        geometries: &mut Vec<GeometryRange>
     ) -> ObjectRange {
         let vertex_range = VertexRange::add_vertices(obj, vertices);
-        let start = index_ranges.len();
+        let start = geometries.len();
         for geom in obj.geometry.iter() {
-            index_ranges.push(IndexRange::add_indices(geom, vertex_range, indices))
+            geometries.push(GeometryRange::add_indices(geom, vertex_range, indices))
         }
-        ObjectRange(start, index_ranges.len())
+        ObjectRange(start, geometries.len())
     }
 }
 
@@ -196,7 +196,7 @@ impl ObjSetRange {
         obj_set: &wobj::obj::ObjSet,
         vertices: &mut Vec<Vertex>,
         indices: &mut Vec<u32>,
-        index_ranges: &mut Vec<IndexRange>,
+        geometries: &mut Vec<GeometryRange>,
         objs: &mut Vec<ObjectRange>
     ) -> ObjSetRange {
         let start = objs.len();
@@ -206,7 +206,7 @@ impl ObjSetRange {
                     obj, 
                     vertices,
                     indices,
-                    index_ranges
+                    geometries
                 )
             );
         }
