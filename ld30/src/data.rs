@@ -49,7 +49,6 @@ impl Iterator<Type> for TypeIterator {
 }
 
 pub struct Data {
-    pub obj_data: Vec<Option<wobj::obj::ObjSet>>,
     pub obj_sets: Vec<ObjSetRange>,
     pub objects: Vec<ObjectRange>,
     pub geometries: Vec<GeometryRange>,
@@ -82,7 +81,6 @@ impl Data {
             }
         }
         Data {
-            obj_data: obj_data,
             obj_sets: obj_sets,
             objects: objects,
             geometries: geometries,
