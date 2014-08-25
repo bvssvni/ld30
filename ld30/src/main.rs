@@ -14,6 +14,7 @@ use nphysics3df32 as phys;
 pub use sdl2_game_window::GameWindowSDL2 as Window;
 
 use piston::cam;
+use piston::GameWindow;
 
 mod vertex;
 mod shader_param;
@@ -35,6 +36,7 @@ fn main() {
             fullscreen: false,
         }
     );
+    window.capture_cursor(true);
 
     let projection = cam::CameraPerspective {
             fov: 70.0f32,
