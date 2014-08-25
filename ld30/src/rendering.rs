@@ -1,7 +1,7 @@
 use gfx;
 use device;
-use piston;
 use Window;
+use piston::vecmath::Matrix4;
 
 use gfx::{Device, DeviceHelper};
 
@@ -61,17 +61,21 @@ impl Graphics {
         );
     }
 
-    pub fn draw_instance(&mut self, ty: data::Type, data: &data::Data) {
-        use piston::cam::model_view_projection;
-
+    pub fn draw_instance(
+        &mut self, 
+        ty: data::Type, 
+        mat: Matrix4<f32>, 
+        color: [f32, ..4], 
+        data: &data::Data
+    ) {
         data.with_type_index_ranges(ty, |start, end| {
             let ref mesh = self.vertices;
             let slice = gfx::IndexSlice32(gfx::TriangleList, self.indices, start as u32, end as u32);
             let ref frame = self.frame;
             let ref prog = self.program;
             let shader_param = ShaderParam {
-                model_view_projection: piston::vecmath::mat4_id(),
-                color: [1.0, 0.0, 0.0, 1.0], 
+                model_view_projection: mat,
+                color: color, 
             };
             let ref state = self.state;
             self.renderer.draw(mesh, slice, frame, (prog, &shader_param), state).unwrap();

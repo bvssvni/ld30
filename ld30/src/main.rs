@@ -13,11 +13,11 @@ use nphysics3df32 as phys;
 
 pub use sdl2_game_window::GameWindowSDL2 as Window;
 
-mod internal;
+use piston::cam;
+
 mod vertex;
 mod shader_param;
 mod shader_source;
-mod camera;
 mod rendering;
 mod data;
 mod logic;
@@ -36,31 +36,48 @@ fn main() {
         }
     );
 
-    let mut camera_manager = camera::CameraManager::new();   
+    let projection = cam::CameraPerspective {
+            fov: 70.0f32,
+            near_clip: 0.1,
+            far_clip: 1000.0,
+            aspect_ratio: 1.0
+        }.projection();
+    let _initial_cam_pos = [-1.967394f32, 1.608332, 2.264971];
+    let mut first_person = cam::FirstPerson::new(
+            _initial_cam_pos,
+            cam::FirstPersonSettings::default()
+        );
     let mut graphics = rendering::Graphics::new(&mut window, &data); 
     let game_iter_settings = piston::GameIteratorSettings {
         updates_per_second: 120,
         max_frames_per_second: 60,
     };
 
-    // TEST
-    println!("{}", data.obj_data[data::Slab.to_uint()]);
-
     for e in piston::GameIterator::new(&mut window, &game_iter_settings) {
         match e {
             piston::Render(_args) => {
                     graphics.clear();
 
-                    // TEST
-                    graphics.draw_instance(data::Slab, &data);
+                    let model = piston::vecmath::mat4_id();
+                    let mvp = cam::model_view_projection(model, first_person.camera(0.0).orthogonal(),
+                                                         projection);
+                    let color = [1.0, 0.0, 0.0, 1.0];
+                    graphics.draw_instance(data::Slab, mvp, color, &data);
 
                     graphics.flush();
-                },
+            }
             piston::Update(args) => {
                 // Update physics.
                 world.step(args.dt as f32);
-            },
-            piston::Input(_args) => {}
+                first_person.update(args.dt);
+            }
+            piston::Input(ref args) => {
+                first_person.input(args);
+
+                // TEST
+                let [x, y, z] = first_person.position;
+                println!("{} {} {}", x, y, z);
+            }
         }
     }
 }

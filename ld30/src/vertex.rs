@@ -1,6 +1,4 @@
 
-use internal::{Position, UV};
-
 #[vertex_format]
 pub struct Vertex {
     pos: [f32, ..3],
@@ -13,7 +11,7 @@ impl Clone for Vertex {
 }
 
 impl Vertex {
-    pub fn new(pos: Position) -> Vertex {
+    pub fn new(pos: [f32, ..3]) -> Vertex {
         Vertex {
             pos: pos,
         }
