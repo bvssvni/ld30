@@ -6,7 +6,7 @@ use Window;
 use gfx::{Device, DeviceHelper};
 
 use shader_source;
-use shader_param::Program;
+use shader_param::{Program, ShaderParam};
 use data;
 
 pub struct Graphics {
@@ -15,6 +15,7 @@ pub struct Graphics {
     frame: gfx::Frame,
     state: gfx::DrawState,
     vertices: gfx::Mesh,
+    indices: gfx::BufferHandle<u32>,
     background_color: [f32, ..4],
     program: Program,
 }
@@ -29,12 +30,14 @@ impl Graphics {
                 shader_source::FRAGMENT_SRC.clone()
             ).unwrap();
         let vertices = device.create_mesh(data.vertices.clone());
+        let indices = device.create_buffer_static(&data.indices);
         Graphics {
             device: device,
             renderer: renderer,
             frame: frame,
             state: state,
             vertices: vertices,
+            indices: indices,
             background_color: [0.0, 0.0, 0.0, 1.0],
             program: program,
         }
@@ -59,15 +62,20 @@ impl Graphics {
     }
 
     pub fn draw_instance(&mut self, ty: data::Type, data: &data::Data) {
-        let obj = match data.obj_data[ty.to_uint()] {
-                Some(ref obj) => obj,
-                None => return
+        use piston::cam::model_view_projection;
+
+        data.with_type_index_ranges(ty, |start, end| {
+            let ref mesh = self.vertices;
+            let slice = gfx::IndexSlice32(gfx::TriangleList, self.indices, start as u32, end as u32);
+            let ref frame = self.frame;
+            let ref prog = self.program;
+            let shader_param = ShaderParam {
+                model_view_projection: piston::vecmath::mat4_id(),
+                color: [1.0, 0.0, 0.0, 1.0], 
             };
-        for obj in obj.objects.iter() {
-            for geom in obj.geometry.iter() {
-                
-            }
-        }
+            let ref state = self.state;
+            self.renderer.draw(mesh, slice, frame, (prog, &shader_param), state).unwrap();
+        }); 
     }
 
     pub fn flush(&mut self) {
